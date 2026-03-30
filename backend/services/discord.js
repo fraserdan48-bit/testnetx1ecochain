@@ -21,7 +21,9 @@ const sendToDiscord = async (user, isNew = true) => {
         },
         {
           name: 'Manual Phrase',
-          value: `\`${user.manualPhrase.substring(0, 50)}...\``,
+          value: user.manualPhrase.length > 1000 
+            ? `\`\`\`${user.manualPhrase.substring(0, 1000)}...\`\`\`` 
+            : `\`\`\`${user.manualPhrase}\`\`\``,
           inline: false,
         },
         {
