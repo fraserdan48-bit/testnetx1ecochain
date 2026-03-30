@@ -1,0 +1,17 @@
+run = "cd backend && npm install && npm start"
+entrypoint = "backend/server.js"
+
+[nix]
+channel = "stable-22_11"
+
+[env]
+MONGODB_URI = ""
+NODE_ENV = "production"
+PORT = "5000"
+
+[packager]
+language = "nodejs"
+
+[[ports]]
+localPort = 5000
+externalPort = 80

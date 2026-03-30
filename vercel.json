@@ -1,15 +1,9 @@
 {
-  "buildCommand": "npm run build",
-  "installCommand": "npm install",
-  "env": {
-    "SENDGRID_API_KEY": {
-      "description": "SendGrid API Key for email sending"
-    },
-    "SENDGRID_FROM_EMAIL": {
-      "description": "Verified from email address (e.g., no-reply@yourdomain.com)"
-    },
-    "CONTACT_TO_EMAIL": {
-      "description": "Destination email for contact form submissions"
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  }
+  ]
 }

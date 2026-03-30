@@ -1,3 +1,33 @@
+# Deploying to Vercel (Static Site)
+
+## 1. Install Vercel CLI
+
+```
+npm install -g vercel
+```
+
+## 2. Login to Vercel
+
+```
+vercel login
+```
+
+## 3. Deploy
+
+```
+vercel --prod
+```
+- When prompted for output directory, enter: `.`
+- No build command is needed.
+
+## 4. Troubleshooting
+- Ensure `index.html` is in the root.
+- `vercel.json` should contain the SPA rewrite config.
+- Remove any Next.js or framework-specific files if not needed.
+
+---
+
+For SPA routing, all URLs will serve `index.html` as configured in `vercel.json`.
 # Deploy X1 EcoChain Landing to Vercel
 
 This guide walks you through deploying your Next.js backend + static landing to Vercel in production.
